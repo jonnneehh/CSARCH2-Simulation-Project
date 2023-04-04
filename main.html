@@ -1,16 +1,55 @@
 <html>
     <head>
-        <title>
-
-        </title>
+        <title>IEEE-754 Binary-64 floating-point converter (including all special cases)</title>
+        <link rel="stylesheet" href="style.css">
     </head>
     <body>
-        <div>
-
+        <!--Header-->
+        <div class="header">
+            <h1>IEEE-754 Binary-64 floating-point converter (including all special cases)</h1>
         </div>
 
-        <div>
-            
+
+        <div class="area">
+            <!--INPUT-->
+            <div class="area-input">
+                <div class="input-section">
+                    <div class="input-section-mantissa">
+                        <input type="text" id="matissa-input" placeholder="Mantissa">
+                    </div>
+                    <div class="input-section-displayof2">
+                        <p id="2display">x 2</p>
+                    </div>
+                    <div class="input-section-exponent">
+                        <input type="text" id="exponent-input" placeholder="Exponent">
+                    </div>
+                </div>
+                <div class="input-error">
+                    <p id="input-error-text" style="color:red;" hidden>Error</p>
+                </div>
+                <div class="input-enter">
+                    <input type="button" id="submit-input" value="Convert">
+                </div>
+            </div>
+
+            <!--OUTPUT-->
+            <div class="area-output">
+                <div class="output-binary">
+                    <p id="output-binary-text">111010100011</p>
+                    <input type="button" id="copy-binary" value="Copy Binary">
+                </div>
+                <div class="output-hex">
+                    <p id="output-hex-text">F381E7BA8A</p>
+                    <input type="button" id="copy-hex" value="Copy Hex">
+                </div>
+            </div>
+        </div>
+
+
+        <!--Footer-->
+        <div class="footer">  
+            <h2>Front End: Jon Llamado</h2>
+            <h2>Back End: Calvin Coronado & Rijan Opalla</h2>
         </div>
     </body>
 </html>
