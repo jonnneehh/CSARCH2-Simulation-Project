@@ -2,6 +2,33 @@ var input_mantissa = document.getElementById("mantissa-input").value;
 var input_exponent = document.getElementById("exponent").value
 
 
+function roundToNearest(mantissa){
+    let bits = mantissa.split('');
+    let lastBit = bits[bits.length-1];
+
+    bits = bits.slice(0, bits.length - 1);
+    let roundUp = false;
+    for (let i = bits.length - 1; i >= 0; i--) {
+        if (bits[i] === '1') {
+            if (!roundUp) {
+                roundUp = true;
+            }
+        }
+        else if (roundUp) {
+            bits[i] = '1';
+            roundUp = false;
+        }
+        if (i === bits.length - 53) {
+            break;
+        }
+    }
+    if (roundUp) {
+        lastBit = '1';
+    }
+    bits.push(lastBit);
+    return bits.join('');
+}
+
 function normalize(mantissa, exponent) {
     //get sign
     let sign = mantissa[0] === '-' ? -1 : 1; //if neg, -1, else, 1
@@ -33,18 +60,24 @@ function normalize(mantissa, exponent) {
     }
     mantissa = mantissa.slice(0, mantissa.length - 52) + '.' + mantissa.slice(mantissa.length - 52);
 
+    //round mantissa
+    mantissa = roundToNearest(mantissa);
+
+    //if mantissa rounded up, shift decimal point, add exponent
+    if (mantissa === '1') {
+        mantissa = '0.' + '0'.repeat(52);
+        exponent++;
+    }
+
+    //adjust sign of exponent
+    exponent *= sign;
+
     return {mantissa: mantissa, exponent: exponent};
 }
 
 function converttoBinary64(mantissa, exponent) { 
     let signBit = mantissa[0] === '-' ? '1': '0';
     
-    mantissa = mantissa.replace('-', '');
-    let parts = mantissa.split('.');
-    let intPart = parseInt(parts[0], 2).toString(2);
-    let fracPart = parts.length > 1 ? parts[1]:'';
-    let binaryMantissa = intPart + '.' + fracPart;
-
     //normalize mantissa
     let normalized = normalize(binaryMantissa, exponent);
     let normalizedMantissa = normalized.mantissa;
