@@ -92,6 +92,38 @@ function converttoBinary64(mantissa, exponent) {
     //pad normalized mantissa to 52 bits
     let binaryMantissaPadded = normalizedMantissa.replace('.', '').padEnd(52, '0');
 
+    //perform checks
+    let status = '';
+    if (eprime === '11111111111') {
+        if (binaryMantissaPadded === '0000000000000000000000000000000000000000000000000000') {
+            if (signBit === '0') {
+                status = '+inf';
+                return status
+            }
+            else {
+                status = '-inf';
+                return status
+            }
+        }
+    }
+    
+    if (eprime === '00000000000') { //e' == 0
+        if (binaryMantissaPadded === '0000000000000000000000000000000000000000000000000000') {
+            if (signBit === '0') {
+                status = '+0';
+                return status
+            }
+            else {
+                status = '-0';
+                return status
+            }
+        }
+        else { //e' == zero, but significand != 0
+            status = 'Denormalized';
+            return status
+        }
+    }
+    
     //combine 
     let binary = signBit + eprime + binaryMantissaPadded;
 
