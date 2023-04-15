@@ -79,7 +79,7 @@ function converttoBinary64(mantissa, exponent) {
     let signBit = mantissa[0] === '-' ? '1': '0';
     
     //normalize mantissa
-    let normalized = normalize(binaryMantissa, exponent);
+    let normalized = normalize(mantissa, exponent);
     let normalizedMantissa = normalized.mantissa;
     let normalizedExponent = normalized.exponent;
 
