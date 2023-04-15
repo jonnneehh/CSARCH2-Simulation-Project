@@ -98,11 +98,11 @@ function converttoBinary64(mantissa, exponent) {
         if (binaryMantissaPadded === '0000000000000000000000000000000000000000000000000000') {
             if (signBit === '0') {
                 status = '+inf';
-                return status
+                return status;
             }
             else {
                 status = '-inf';
-                return status
+                return status;
             }
         }
     }
@@ -111,16 +111,16 @@ function converttoBinary64(mantissa, exponent) {
         if (binaryMantissaPadded === '0000000000000000000000000000000000000000000000000000') {
             if (signBit === '0') {
                 status = '+0';
-                return status
+                return status;
             }
             else {
                 status = '-0';
-                return status
+                return status;
             }
         }
         else { //e' == zero, but significand != 0
             status = 'Denormalized';
-            return status
+            return status;
         }
     }
     
@@ -130,6 +130,17 @@ function converttoBinary64(mantissa, exponent) {
     return binary;
 }
 
+
+function converttoHex(bits){
+    let hex = '';
+    for (let i = 0; i < 16; i++) {
+        let slice = bits.slice(i * 4, (i + 1) * 4);
+        let nibble = parseInt(slice, 2).toString(16);
+        hex += nibble;
+    }
+
+    return hex;
+}
 
 
 function returnOutput() {
