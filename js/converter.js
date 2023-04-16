@@ -1,36 +1,38 @@
 $(document).ready(function () {
     //Copies the hex text
     $("#copy-hex").click(function (){
-        var outputBinary = $("#output-hex-text")
+        var output = $("#output-hex-text")
+        var copied = $("#output-hex-copied")
 
         var tempTextarea = $("<textarea>");
-        tempTextarea.val(outputBinary.text());
+        tempTextarea.val(output.text());
 
-        outputBinary.select()
+        output.select()
         document.execCommand("copy");
         $("body").append(tempTextarea);
         tempTextarea.select();
         document.execCommand("copy");
         tempTextarea.remove();
 
-        //Simulate something here to show button is copied
+        copied.css("visibility", "visible")
     })
 
     //Copies the binary text
     $("#copy-binary").click(function (){
-        var outputBinary = $("#output-binary-text")
+        var output = $("#output-binary-text")
+        var copied = $("#output-binary-copied")
 
         var tempTextarea = $("<textarea>");
-        tempTextarea.val(outputBinary.text());
+        tempTextarea.val(output.text());
 
-        outputBinary.select()
+        output.select()
         document.execCommand("copy");
         $("body").append(tempTextarea);
         tempTextarea.select();
         document.execCommand("copy");
         tempTextarea.remove();
 
-        //Simulate something here to show text is copied
+        copied.css("visibility", "visible")
     })
     
     //Does the function
@@ -44,9 +46,12 @@ $(document).ready(function () {
         var error_div = $(".input-error")
         var error_text = $("#input-error-text")
 
+        $("#output-binary-copied").css("visibility", "hidden")
+        $("#output-hex-copied").css("visibility", "hidden")
+
         if(mantissa != "" && exponent != "") {
             error_div.css("visibility", "hidden")
-            
+
             actual_output = converttoBinary64(mantissa, exponent)
             outputBinary.text(actual_output)
             outputHexadecimal.text(converttoHex(actual_output))

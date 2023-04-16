@@ -2,7 +2,9 @@
     <head>
         <title>IEEE-754 Binary-64 floating-point converter (including all special cases)</title>
         <link rel="stylesheet" href="style.css">
-        <link href="https://fonts.google.com/specimen/Fjalla+One">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Catamaran:wght@100;200;300;400;500;600;700;800&display=swap" rel="stylesheet">
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
         <script src="js/converter.js"></script>
     </head>
@@ -22,7 +24,7 @@
                             <input type="text" id="mantissa-input" placeholder="Mantissa">
                         </div>
                         <div class="input-section-displayof2">
-                            <p id="2display">x 2</p>
+                            <p id="display2">x 2</p>
                         </div>
                         <div class="input-section-exponent">
                             <input type="text" id="exponent-input" placeholder="Exponent">
@@ -39,12 +41,14 @@
                 <!--OUTPUT-->
                 <div class="area-output">
                     <div class="output-binary">
+                        <p id="output-binary-copied">Copied to clipboard!</p>
                         <p id="output-binary-text">111010100011</p>
-                        <input type="button" id="copy-binary" value="Copy Binary">
+                        <button id="copy-binary">Copy Binary</button>
                     </div>
                     <div class="output-hex">
+                        <p id="output-hex-copied">Copied to clipboard!</p>
                         <p id="output-hex-text">F381E7BA8A</p>
-                        <input type="button" id="copy-hex" value="Copy Hex">
+                        <button id="copy-hex">Copy Hex</button>
                     </div>
                 </div>
 

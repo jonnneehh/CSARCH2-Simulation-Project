@@ -19,14 +19,19 @@ body{
     margin: 1%;
     padding: 1%;
     font-size: 18px;
-    font-family: 'Fjalla One', sans-serif;
+    font-family: 'Catamaran', sans-serif;
     min-height:50px;
+}
+
+h1{
+    font-weight: 600;
 }
 
 .area{
     padding: 1%;
     font-size: 15px;
-    font-family: 'Fjalla One', sans-serif;
+    font-family: 'Catamaran', sans-serif;
+    font-weight: 500;
     flex:1;
     min-height: 50vh;
 }
@@ -34,7 +39,8 @@ body{
 .area-input{
     padding: 1%;
     margin-bottom: 5%;
-
+    margin-left: 5%;
+    margin-right: 5%;
 }
 
 .input-section {
@@ -47,6 +53,10 @@ body{
     margin-right: 3px;
 }
 
+#display2{
+    font-size: 20px;
+}
+
 .input-error{
     visibility: hidden;
 }
@@ -57,24 +67,61 @@ body{
 
 .area-output{
     padding: 1%;
-    display: flex;
     visibility: hidden;
 }
 
 .area-output > *{
-    margin-left: 5px;
-    margin-right: 5px;
+    margin-right: 5%;
+    margin: 5%
 }
 
 .output-binary{
-    margin-right: 5%;
+    margin-bottom: 10%;
+}
+
+.area-output > * > *{
+    font-weight: 500;
+}
+
+#output-binary-copied{
+    color:gray;
+    visibility: hidden;
+}
+
+#output-hex-copied{
+    color:gray;
+    visibility: hidden;
 }
 
 .footer{
     /*border: 1px solid black; */
     margin: 1%;
     padding: 1%;
-    font-size: 8px;
-    font-family: 'Fjalla One', sans-serif;
 }
 
+h2{
+    font-size: 14px;
+    font-weight: 500;
+    font-family: 'Catamaran', sans-serif;
+}
+
+button{
+    font-size: 14px;
+    font-weight: 500;
+    border-color: transparent;
+    border-radius: 5px;
+    font-family: 'Catamaran', sans-serif;
+    background-color: ABC4AA;
+    transition-duration: 0.2s;
+}
+
+button:hover {
+    background-color: #e9f7e9; /* Green */
+    cursor:pointer;
+}
+
+input{
+    font-size: 18px;
+    font-weight: 500;
+    font-family: 'Catamaran', sans-serif;
+}
