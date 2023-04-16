@@ -38,9 +38,13 @@ h1{
 
 .area-input{
     padding: 1%;
-    margin-bottom: 5%;
+    margin-bottom: 2%;
     margin-left: 5%;
     margin-right: 5%;
+}
+
+.area-input > * > *{
+    font-size: 18;
 }
 
 .input-section {
@@ -71,16 +75,17 @@ h1{
 }
 
 .area-output > *{
-    margin-right: 5%;
-    margin: 5%
+    margin: 5%;
+    margin-bottom: 2%;
 }
 
 .output-binary{
-    margin-bottom: 10%;
+    margin-bottom: 2%;
 }
 
 .area-output > * > *{
     font-weight: 500;
+    font-size: 18px;
 }
 
 #output-binary-copied{
@@ -105,6 +110,14 @@ h2{
     font-family: 'Catamaran', sans-serif;
 }
 
+select{
+    font-size: 18px;
+    font-weight: 500;
+    font-family: 'Catamaran', sans-serif;
+    border-radius: 5px;
+    border-color: transparent;
+}
+
 button{
     font-size: 14px;
     font-weight: 500;
@@ -124,4 +137,6 @@ input{
     font-size: 18px;
     font-weight: 500;
     font-family: 'Catamaran', sans-serif;
+    border-radius: 5px;
+    border-color: transparent;
 }

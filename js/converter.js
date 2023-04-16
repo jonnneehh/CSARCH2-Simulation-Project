@@ -1,5 +1,4 @@
 $(document).ready(function () {
-    //Copies the hex text
     $("#copy-hex").click(function (){
         var output = $("#output-hex-text")
         var copied = $("#output-hex-copied")
@@ -46,94 +45,105 @@ $(document).ready(function () {
         var error_div = $(".input-error")
         var error_text = $("#input-error-text")
 
+        var base = $("#base").val()
+
         $("#output-binary-copied").css("visibility", "hidden")
         $("#output-hex-copied").css("visibility", "hidden")
 
-        if(mantissa != "" && exponent != "") {
+        mantissaInputError = mantissaInputCheck(base, mantissa)
+        exponentInputError = exponentInputCheck(exponent)
+
+        if(mantissaInputError){
+            error_text.text(mantissaInputError)
+            error_div.css("visibility", "visible")
+        }
+        else if(exponentInputError){
+            error_text.text(exponentInputError)
+            error_div.css("visibility", "visible")
+        }
+        else{
             error_div.css("visibility", "hidden")
+            
+            if(base == 10){
+                mantissa = convertDecToBin(mantissa)
+            }
+
+            if(exponent == "") exponent = 0
 
             actual_output = converttoBinary64(mantissa, exponent)
             outputBinary.text(actual_output)
             outputHexadecimal.text(converttoHex(actual_output))
-        }   
-        else{
-            error_text.text("Error: Please fill out the textbox")
-            error_div.css("visibility", "visible")
-        }   
-        
-        if(actual_output) $(".area-output").css("visibility", "visible")
-
-        function roundToNearest(mantissa){
-            let bits = mantissa.split('');
-            let lastBit = bits[bits.length-1];
-    
-            bits = bits.slice(0, bits.length - 1);
-            let roundUp = false;
-            for (let i = bits.length - 1; i >= 0; i--) {
-                if (bits[i] === '1') {
-                    if (!roundUp) {
-                        roundUp = true;
-                    }
-                }
-                else if (roundUp) {
-                    bits[i] = '1';
-                    roundUp = false;
-                }
-                if (i === bits.length - 53) {
-                    break;
-                }
-            }
-            if (roundUp) {
-                lastBit = '1';
-            }
-            bits.push(lastBit);
-            return bits.join('');
+            if(actual_output) $(".area-output").css("visibility", "visible")
         }
-    
-        function normalize(mantissa, exponent) {
-            //get sign
-            let sign = mantissa[0] === '-' ? -1 : 1; //if neg, -1, else, 1
-    
-            //remove -
+        
+        function convertDecToBin(mantissa){
+            let radixPoint = mantissa.indexOf('.')
+            if(radixPoint == -1) return parseInt(mantissa).toString(2)
+
+            //divide mantissa to two
+            let upper = mantissa.slice(0, radixPoint)
+            let lower = mantissa.slice(radixPoint + 1, mantissa.length)
+
+            if(!lower) lower = 0
+
+            upper = parseInt(upper).toString(2)
+            lower = parseInt(lower).toString(2)
+
+            return upper + "." + lower
+        }
+
+        function normalize(mantissa, exponent){
+            exponent = parseInt(exponent)
+
+            if(!mantissa || mantissa == 0){
+                mantissa = "0"
+                console.log("Normalized Mantissa: " + mantissa)
+                console.log("Normalized Exponent: " + exponent)
+                return {mantissa: mantissa, exponent: exponent}
+            }
+
+            //get mantissa sign
+            let sign = mantissa[0] === '-' ? '-' : ''; //if neg => -, else ''
+            
+            //remove '-' to perform calculations easier
             mantissa = mantissa.replace('-', ''); 
-    
-            //get position of decimal point
-            let decimalPos = mantissa.indexOf('.');
-            if (decimalPos === -1) {
-                decimalPos = mantissa.length;
+
+            //if mantissa starts with "1." then it is already normalized
+            if(mantissa[0] == 1 && mantissa[1] == '.') {
+                console.log("Normalized Mantissa: " + mantissa)
+                console.log("Normalized Exponent: " + exponent)
+                return {mantissa: sign + mantissa, exponent: exponent}
             }
-    
-            //get number of bits to shift point
-            let shift = decimalPos - exponent;
-    
-            //if shift is neg, add zeroes to beginning of mantissa
-            if (shift < 0) {
-                mantissa = '0'.repeat(-shift) + mantissa;
-                shift = 0;
-            }
-    
-            //Shift point left or right
-            mantissa = mantissa.replace('.', ''); //remove .
-            if (shift > 0) {
-                mantissa = mantissa.padEnd(shift + mantissa.length, '0');
-            } else {
-                mantissa = mantissa.padStart(shift + mantissa.length, '0');
-            }
-            mantissa = mantissa.slice(0, mantissa.length - 52) + '.' + mantissa.slice(mantissa.length - 52);
-    
-            //round mantissa
-            mantissa = roundToNearest(mantissa);
-    
-            //if mantissa rounded up, shift decimal point, add exponent
-            if (mantissa === '1') {
-                mantissa = '0.' + '0'.repeat(52);
-                exponent++;
-            }
-    
-            //adjust sign of exponent
-            exponent *= sign;
-    
-            return {mantissa: mantissa, exponent: exponent};
+            //get radix point pos
+            let radixPoint = mantissa.indexOf('.')
+            if(radixPoint == -1) radixPoint = mantissa.length
+            radixPoint = parseInt(radixPoint)
+            
+            //remove radix point
+            mantissa = mantissa.replace('.', '')
+            //get 1 pos
+            let posOf1 = mantissa.indexOf('1')
+            console.log(posOf1)
+
+            //divide mantissa to two
+            let upper = mantissa.slice(0, posOf1 + 1)
+            let lower = mantissa.slice(posOf1 + 1, mantissa.length)
+
+            //remove all 0s in upper
+            upper = upper.replaceAll('0', '')
+            
+            //put back radix point
+            upper = upper.concat('.')
+            
+            //mantissa done
+            mantissa = sign + upper + lower
+
+            exponent = exponent + radixPoint - posOf1 - 1
+
+            console.log("Normalized Mantissa: " + mantissa)
+            console.log("Normalized Exponent: " + exponent)
+            return {mantissa: mantissa, exponent: exponent}
+            
         }
     
         function converttoBinary64(mantissa, exponent) { 
@@ -151,11 +161,11 @@ $(document).ready(function () {
             let eprime = biasedExponent.toString(2).padStart(11, '0');
             
             //pad normalized mantissa to 52 bits
-            let binaryMantissaPadded = normalizedMantissa.replace('.', '').padEnd(52, '0');
+            let binaryMantissaPadded = normalizedMantissa.replace('.', '').replace('1', '').replace('-', '').padEnd(52, '0');
     
             //perform checks
             let status = '';
-            if (eprime === '11111111111') {
+            if (eprime === '11111111111' || normalizedExponent >= 1024) {
                 if (binaryMantissaPadded === '0000000000000000000000000000000000000000000000000000') {
                     if (signBit === '0') {
                         status = '+inf';
@@ -168,7 +178,7 @@ $(document).ready(function () {
                 }
             }
             
-            if (eprime === '00000000000') { //e' == 0
+            if (eprime === '00000000000' || normalizedExponent <= -1023) { //e' == 0
                 if (binaryMantissaPadded === '0000000000000000000000000000000000000000000000000000') {
                     if (signBit === '0') {
                         status = '+0';
@@ -187,10 +197,16 @@ $(document).ready(function () {
             
             //combine 
             let binary = signBit + eprime + binaryMantissaPadded;
-    
-            return binary;
+            
+            var output = ""
+            split = binary.split("")
+            for(let i = 0; i < split.length; i++){
+                output += split[i]
+                if((i + 1) % 4 == 0 && i != 0) output += " "
+            }
+
+            return output;
         }
-    
     
         function converttoHex(bits){
             let hex = '';
@@ -198,20 +214,78 @@ $(document).ready(function () {
                 let slice = bits.slice(i * 4, (i + 1) * 4);
                 let nibble = parseInt(slice, 2).toString(16);
                 hex += nibble;
+                if((i + 1) % 4 == 0) hex += " "
             }
-    
+
             return hex;
         }
-    
-    
-        function returnOutput() {
-            subprocess = '';
-            output = '';
-            
-            subprocess = normalize(input_mantissa, input_exponent);
-            output = binarytofloat64(subprocess[0], subprocess[1]);
-            document.getElementById('output-binary-text').innerHTML = output;
+        
+        function mantissaInputCheck(base, mantissa){
+            for(char of mantissa.split("")){
+                if(base == 2){
+                    if(char != '0' && char != '1' && char != '.' && char != '-' ){
+                        return "Please enter a valid binary input"
+                    }
+                }
+                else if(base == 10){
+                    if(char != '0' && char != '1' && char != '.' && char != '-' && char != '2'  
+                       && char != '3' && char != '4' && char != '5'  && char != '6'  && char != '7'
+                       && char != '8'  && char != '9'){
+                        return "Please enter a valid decimal input"
+                    }
+                }
+                else{
+                    return "Please enter 2 or 10 for the base"
+                }
+            }
         }
+
+        function exponentInputCheck(exponent){
+            for(char of exponent.split("")){
+                if(char != '0' && char != '1' && char != '-' && char != '2'  
+                       && char != '3' && char != '4' && char != '5'  && char != '6'  && char != '7'
+                       && char != '8'  && char != '9'){
+                    return "Please enter a valid decimal exponent"
+                }
+            }
+        }
+
+        
+        // function returnOutput() {
+        //     subprocess = '';
+        //     output = '';
+            
+        //     subprocess = normalize(input_mantissa, input_exponent);
+        //     output = binarytofloat64(subprocess[0], subprocess[1]);
+        //     document.getElementById('output-binary-text').innerHTML = output;
+        // }
+
+        // function roundToNearest(mantissa){
+        //     let bits = mantissa.split('');
+        //     let lastBit = bits[bits.length-1];
+    
+        //     bits = bits.slice(0, bits.length - 1);
+        //     let roundUp = false;
+        //     for (let i = bits.length - 1; i >= 0; i--) {
+        //         if (bits[i] === '1') {
+        //             if (!roundUp) {
+        //                 roundUp = true;
+        //             }
+        //         }
+        //         else if (roundUp) {
+        //             bits[i] = '1';
+        //             roundUp = false;
+        //         }
+        //         if (i === bits.length - 53) {
+        //             break;
+        //         }
+        //     }
+        //     if (roundUp) {
+        //         lastBit = '1';
+        //     }
+        //     bits.push(lastBit);
+        //     return bits.join('');
+        // }
     });
 })
 
