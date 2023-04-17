@@ -71,8 +71,8 @@ $(document).ready(function () {
             if(exponent == "") exponent = 0
 
             actual_output = converttoBinary64(mantissa, exponent)
-            outputBinary.text(actual_output)
-            outputHexadecimal.text(converttoHex(actual_output))
+            outputBinary.text(actual_output.output)
+            outputHexadecimal.text(actual_output.hex)
             if(actual_output) $(".area-output").css("visibility", "visible")
         }
         
@@ -205,19 +205,21 @@ $(document).ready(function () {
                 if((i + 1) % 4 == 0 && i != 0) output += " "
             }
 
-            return output;
+            let hex = converttoHex(binary);
+            return {output: output, hex: hex};
         }
     
         function converttoHex(bits){
             let hex = '';
-            for (let i = 0; i < 16; i++) {
-                let slice = bits.slice(i * 4, (i + 1) * 4);
-                let nibble = parseInt(slice, 2).toString(16);
-                hex += nibble;
+            for (let i = 0; i < bits.length; i+=4) {
+                let nibble = bits.substr(i,4);
+                let hexDigit = parseInt(nibble, 2).toString(16);
+                
+                hex += hexDigit;
                 if((i + 1) % 4 == 0) hex += " "
             }
 
-            return hex;
+            return '0x' + hex;
         }
         
         function mantissaInputCheck(base, mantissa){
